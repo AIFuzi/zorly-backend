@@ -8,14 +8,41 @@ datasource db {
   provider = "postgresql"
 }
 
-model Word {
+model Board {
   id String @id @default(nanoid())
 
-  word        String
-  translation String
+  title       String
+  description String?
+
+  languageFrom String   @map("language_from")
+  languageTo   String   @map("language_to")
+  isPublic     Boolean  @map("is_public")
+  tags         String[]
+  totalWords   Int      @default(0) @map("total_words")
+
+  words Word[]
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  @@map("Words")
+  @@map("boards")
+}
+
+model Word {
+  id String @id @default(nanoid())
+
+  original  String
+  translate String
+
+  correctCount Int @map("correct_count")
+  wrongCount   Int @map("wrong_count")
+  shownCount   Int @map("shown_count")
+
+  boardId String
+  board   Board  @relation(fields: [boardId], references: [id])
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("words")
 }

@@ -1,8 +1,15 @@
 import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 import { PrismaModule } from '@/src/core/prisma/prisma.module'
+import { BoardModule } from '@/src/modules/board/board.module'
+import { WordModule } from '@/src/modules/word/word.module'
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), PrismaModule],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    PrismaModule,
+    BoardModule,
+    WordModule,
+  ],
 })
 export class CoreModule {}
