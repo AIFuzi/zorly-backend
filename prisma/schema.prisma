@@ -19,6 +19,7 @@ model Board {
   isPublic     Boolean  @map("is_public")
   tags         String[]
   totalWords   Int      @default(0) @map("total_words")
+  boardColor   String   @default("895AF6") @map("board_color")
 
   words Word[]
 
@@ -32,14 +33,15 @@ model Word {
   id String @id @default(nanoid())
 
   original  String
+  //TODO: Create variations -> Tranlate String[var1, var2, var3]
   translate String
 
-  correctCount Int @map("correct_count")
-  wrongCount   Int @map("wrong_count")
-  shownCount   Int @map("shown_count")
+  correctCount Int @default(0) @map("correct_count")
+  wrongCount   Int @default(0) @map("wrong_count")
+  shownCount   Int @default(0) @map("shown_count")
 
   boardId String
-  board   Board  @relation(fields: [boardId], references: [id])
+  board   Board  @relation(fields: [boardId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")

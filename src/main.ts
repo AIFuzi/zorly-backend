@@ -11,6 +11,12 @@ async function bootstrap() {
   app.setGlobalPrefix(config.getOrThrow<string>('PREFIX'))
   app.useGlobalPipes(new ValidationPipe())
 
+  app.enableCors({
+    origin: config.getOrThrow<string>('CLIENT_URL'),
+    credentials: true,
+    exposeHeaders: ['set-cookie'],
+  })
+
   await app.listen(config.getOrThrow<string>('PORT'))
 }
 

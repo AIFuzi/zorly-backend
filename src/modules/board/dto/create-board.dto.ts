@@ -30,4 +30,8 @@ export class CreateBoardDto {
   @IsOptional()
   @IsArray()
   tags: string[]
+
+  @IsOptional()
+  @IsString()
+  board_color: string
 }
