@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 import { PrismaModule } from '@/src/core/prisma/prisma.module'
 import { BoardModule } from '@/src/modules/board/board.module'
+import { TrainingModule } from '@/src/modules/training/training.module'
 import { WordModule } from '@/src/modules/word/word.module'
 
 @Module({
@@ -10,6 +11,7 @@ import { WordModule } from '@/src/modules/word/word.module'
     PrismaModule,
     BoardModule,
     WordModule,
+    TrainingModule,
   ],
 })
 export class CoreModule {}

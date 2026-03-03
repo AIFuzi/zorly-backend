@@ -21,7 +21,8 @@ model Board {
   totalWords   Int      @default(0) @map("total_words")
   boardColor   String   @default("895AF6") @map("board_color")
 
-  words Word[]
+  words     Word[]
+  trainings Training[]
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -47,4 +48,23 @@ model Word {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("words")
+}
+
+model Training {
+  id String @id @default(nanoid())
+
+  board   Board  @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  boardId String @map("board_id")
+
+  correctAnswers   Int @default(0) @map("correct_answers")
+  incorrectAnswers Int @default(0) @map("incorrect_answers")
+  skippedAnswers   Int @default(0) @map("skipped_answers")
+
+  currentIssue Int     @default(0) @map("current_issue")
+  isFinished   Boolean @default(false) @map("is_finished")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("trainings")
 }

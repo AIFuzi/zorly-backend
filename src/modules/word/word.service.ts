@@ -27,19 +27,29 @@ export class WordService {
     })
   }
 
-  async delete() {}
+  async delete(id: string) {
+    const isWordExist = await this.prismaService.word.findFirst({
+      where: { id },
+    })
+    if (!isWordExist) {
+      throw new NotFoundException('Word does not exist')
+    }
+
+    await this.prismaService.word.delete({
+      where: { id },
+    })
+
+    return true
+  }
 
   async getAllByBoard(boardId: string) {
-    const words = await this.prismaService.word.findMany({
+    return this.prismaService.word.findMany({
       where: {
         boardId,
       },
     })
-    if (words.length <= 0) {
-      throw new NotFoundException()
-    }
 
-    return words
+    // return words
   }
 
   async getOne() {}

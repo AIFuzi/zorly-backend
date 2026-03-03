@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { PrismaService } from '@/src/core/prisma/prisma.service'
-import { CreateBoardDto, DeleteBoardDto } from '@/src/modules/board/dto'
+import { CreateBoardDto } from '@/src/modules/board/dto'
 
 @Injectable()
 export class BoardService {
@@ -14,9 +14,7 @@ export class BoardService {
     })
   }
 
-  async delete(dto: DeleteBoardDto) {
-    const { boardId: id } = dto
-
+  async delete(id: string) {
     const isBoardExists = await this.prismaService.board.findFirst({
       where: { id },
     })

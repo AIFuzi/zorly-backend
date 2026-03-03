@@ -1,6 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common'
 import { CreateBoardDto } from '@/src/modules/board/dto'
-import { DeleteBoardDto } from '@/src/modules/board/dto/delete-board.dto'
 
 import { BoardService } from './board.service'
 
@@ -13,9 +12,9 @@ export class BoardController {
     return this.boardService.create(dto)
   }
 
-  @Delete('delete')
-  async delete(@Body() dto: DeleteBoardDto) {
-    return this.boardService.delete(dto)
+  @Delete('delete/:id')
+  async delete(@Param('id') id: string) {
+    return this.boardService.delete(id)
   }
 
   @Get()
