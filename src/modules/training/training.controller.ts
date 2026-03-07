@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common'
 import { GenerateTrainingDto } from '@/src/modules/training/dto'
 import { UpdateTrainingDto } from '@/src/modules/training/dto/update-training.dto'
 
@@ -14,11 +22,11 @@ export class TrainingController {
   }
 
   @Get(':id')
-  async getTraining(@Param('id') id: string) {
-    return await this.trainingService.getTraining(id)
+  async getTraining(@Param('id') id: string, @Query('limit') limit: number) {
+    return await this.trainingService.getTraining(id, limit)
   }
 
-  @Get('training/:id')
+  @Get('not-finished/:id')
   async getNotFinishedTrainingByBoard(@Param('id') id: string) {
     return await this.trainingService.getNotFinishedTrainingByBoard(id)
   }

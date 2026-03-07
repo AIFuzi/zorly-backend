@@ -63,8 +63,26 @@ model Training {
   currentIssue Int     @default(0) @map("current_issue")
   isFinished   Boolean @default(false) @map("is_finished")
 
+  trainingStatistics TrainingStatistic[]
+
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("trainings")
+}
+
+model TrainingStatistic {
+  id String @id @default(nanoid())
+
+  training   Training @relation(fields: [trainingId], references: [id], onDelete: Cascade)
+  trainingId String   @map("training_id")
+
+  correctAnswers   Int @default(0) @map("correct_answers")
+  incorrectAnswers Int @default(0) @map("incorrect_answers")
+  skippedAnswers   Int @default(0) @map("skipped_answers")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("training_statistics")
 }

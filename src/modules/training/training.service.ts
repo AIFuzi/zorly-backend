@@ -22,19 +22,32 @@ export class TrainingService {
     })
   }
 
-  async getTraining(id: string) {
-    return this.prismaService.training.findUnique({
-      where: {
-        id,
-      },
-      include: {
-        board: {
-          include: {
-            words: true,
-          },
-        },
-      },
+  private weightedShuffle<
+    T extends { correctCount: number; wrongCount: number },
+  >(arr: T[]): T[] {
+    return arr
+      .map(word => {
+        const total = word.correctCount + word.wrongCount
+        const errorRate = total === 0 ? 1 : word.wrongCount / total
+        const weight = errorRate + Math.random() * 0.3
+        return { weight, word }
+      })
+      .sort((a, b) => b.weight - a.weight)
+      .map(a => a.word)
+  }
+
+  async getTraining(id: string, limit: number) {
+    const training = await this.prismaService.training.findUnique({
+      where: { id },
+      include: { board: { include: { words: true } } },
     })
+
+    if (!training?.board?.words?.length) return training
+
+    const shuffled = this.weightedShuffle(training.board.words)
+    training.board.words = shuffled.slice(0, limit)
+
+    return training
   }
 
   async updateTraining(id: string, dto: UpdateTrainingDto) {

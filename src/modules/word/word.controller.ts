@@ -4,10 +4,11 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Query,
 } from '@nestjs/common'
-import { CreateWordDto } from '@/src/modules/word/dto'
+import { CreateWordDto, UpdateWordStatsDto } from '@/src/modules/word/dto'
 
 import { WordService } from './word.service'
 
@@ -28,5 +29,13 @@ export class WordController {
   @Delete(':id')
   async delete(@Param('id') id: string) {
     return await this.wordService.delete(id)
+  }
+
+  @Patch(':id')
+  async updateWordStats(
+    @Param('id') id: string,
+    @Body() dto: UpdateWordStatsDto,
+  ) {
+    return await this.wordService.updateWordStats(id, dto)
   }
 }

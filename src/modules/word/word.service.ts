@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { PrismaService } from '@/src/core/prisma/prisma.service'
-import { CreateWordDto } from '@/src/modules/word/dto'
+import { CreateWordDto, UpdateWordStatsDto } from '@/src/modules/word/dto'
 
 @Injectable()
 export class WordService {
@@ -16,14 +16,25 @@ export class WordService {
       throw new NotFoundException(`boardId ${boardId} not found`)
     }
 
-    return this.prismaService.word.create({
-      data: {
-        original,
-        translate,
-        board: {
-          connect: { id: board.id },
+    return await this.prismaService.$transaction(async prisma => {
+      const word = await prisma.word.create({
+        data: {
+          original,
+          translate,
+          boardId: board.id,
         },
-      },
+      })
+
+      await prisma.board.update({
+        where: { id: board.id },
+        data: {
+          totalWords: {
+            increment: 1,
+          },
+        },
+      })
+
+      return word
     })
   }
 
@@ -35,9 +46,20 @@ export class WordService {
       throw new NotFoundException('Word does not exist')
     }
 
-    await this.prismaService.word.delete({
-      where: { id },
-    })
+    await this.prismaService.$transaction([
+      this.prismaService.word.delete({
+        where: { id },
+      }),
+
+      this.prismaService.board.update({
+        where: { id: isWordExist.boardId },
+        data: {
+          totalWords: {
+            decrement: 1,
+          },
+        },
+      }),
+    ])
 
     return true
   }
@@ -50,6 +72,33 @@ export class WordService {
     })
 
     // return words
+  }
+
+  async updateWordStats(id: string, dto: UpdateWordStatsDto) {
+    const { isCorrect } = dto
+
+    await this.prismaService.word.update({
+      where: {
+        id,
+      },
+      data: isCorrect
+        ? {
+            shownCount: {
+              increment: 1,
+            },
+            correctCount: {
+              increment: 1,
+            },
+          }
+        : {
+            shownCount: {
+              increment: 1,
+            },
+            wrongCount: {
+              increment: 1,
+            },
+          },
+    })
   }
 
   async getOne() {}
